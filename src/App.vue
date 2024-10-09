@@ -1,4 +1,3 @@
-<!-- src/App.vue -->
 <template>
   <div id="app">
     <h1>Contact List</h1>
@@ -13,6 +12,7 @@
           <th>Popularity</th>
           <th>Won an Oscar</th>
           <th>Won an Emmy</th>
+          <th>Action</th> <!-- Nueva columna para la acción de eliminar -->
         </tr>
       </thead>
       <tbody>
@@ -28,6 +28,9 @@
           <td>
             <span v-if="contact.wonEmmy">🏆</span>
           </td>
+          <td>
+            <button @click="removeContact(contact.id)">Delete</button> <!-- Botón de eliminar -->
+          </td>
         </tr>
       </tbody>
     </table>
@@ -38,29 +41,32 @@
 import { ref } from 'vue';
 import contactsData from './contacts.json';
 
-// Crear una referencia reactiva que contenga los primeros 5 contactos
 const contacts = ref(contactsData.slice(0, 5));
-const remainingContacts = ref(contactsData.slice(5)); // Contactos restantes
+const remainingContacts = ref(contactsData.slice(5));
 
 // Función para agregar un contacto aleatorio
 function addRandomContact() {
   if (remainingContacts.value.length > 0) {
     const randomIndex = Math.floor(Math.random() * remainingContacts.value.length);
     const randomContact = remainingContacts.value[randomIndex];
-    
-    contacts.value.push(randomContact); // Agregar contacto aleatorio
-    remainingContacts.value.splice(randomIndex, 1); // Eliminar el contacto de la lista de restantes
+
+    contacts.value.push(randomContact);
+    remainingContacts.value.splice(randomIndex, 1);
   } else {
     alert('No more contacts to add!');
   }
 }
 
-// Función para ordenar contactos por nombre
+// Función para eliminar un contacto
+function removeContact(contactId) {
+  contacts.value = contacts.value.filter(contact => contact.id !== contactId);
+}
+
+// Funciones para ordenar contactos
 function sortByName() {
   contacts.value.sort((a, b) => a.name.localeCompare(b.name));
 }
 
-// Función para ordenar contactos por popularidad
 function sortByPopularity() {
   contacts.value.sort((a, b) => b.popularity - a.popularity);
 }
